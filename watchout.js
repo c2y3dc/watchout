@@ -91,3 +91,18 @@ var renderEnemies = function(enemy_data){
 setInterval(function(){
 
   renderEnemies(createEnemies(30))}, 1500);
+
+checkCollision = function(enemy, collidedCallback) {
+  return function(player){
+  var radiusSum, separation, xDiff, yDiff;
+  radiusSum = parseFloat(enemy.attr('r')) + player.r;
+  xDiff = parseFloat(enemy.attr('cx')) - player.x;
+  yDiff = parseFloat(enemy.attr('cy')) - player.y;
+  separation = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+  if (separation < radiusSum) {
+    return collidedCallback(player, enemy);
+  }
+  }
+}
+};
+
