@@ -22,6 +22,7 @@ var gameBoard = d3.select("body").append("svg")
 // var circle = gameBoard.append("circle").attr("cx", 250).attr("cy", 250).attr("r", 11).attr("fill", "red");
 
 var createEnemies = function (numberOfEnemies){
+  console.log("called");
   var array = [];
   for(var i = 0; i < numberOfEnemies; i++){
     var enemy = {};
@@ -35,8 +36,19 @@ var createEnemies = function (numberOfEnemies){
 
 var renderEnemies = function(enemy_data){
   var enemies = gameBoard.selectAll("circle.enemy").data(enemy_data, function(d){
+
     return d.id
   })
+
+  // console.log(enemies)
+  // enemies.attr("cx", Math.random()*100;).attr("cy", 250);
+  enemies.transition().duration(1500)
+    .attr('cx', function(){
+      return axez.x(Math.random()*100)
+    })
+    .attr('cy', function(){
+      return axez.y(Math.random()*100)
+    })
 
   enemies.enter()
     .append('svg:circle')
@@ -49,6 +61,12 @@ var renderEnemies = function(enemy_data){
       return axez.y(enemy.y)
     }).attr('r',10);
 
+  // enemies.exit().remove();
+
 }
 
-renderEnemies(createEnemies(30));
+// renderEnemies(createEnemies(30));
+
+setInterval(function(){
+
+  renderEnemies(createEnemies(30))}, 1500);
