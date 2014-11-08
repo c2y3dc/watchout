@@ -1,13 +1,16 @@
 // start slingin' some d3 here.
-
-// var width = 500;
-// var height = 1000;
 var gameOptions = {
   height: 450,
   width: 700,
   numberOfEnemies: 30,
   padding: 20
 };
+
+var gameStats = {
+  score: 0,
+  bestScore: 0
+}
+
 var axez = {
   x: d3.scale.linear()
       .domain([0, 100])
@@ -41,7 +44,7 @@ var player = gameBoard.selectAll('.draggableCircle')
 
 
 var createEnemies = function (numberOfEnemies){
-  console.log("called");
+
   var array = [];
   for(var i = 0; i < numberOfEnemies; i++){
     var enemy = {};
@@ -55,21 +58,47 @@ var createEnemies = function (numberOfEnemies){
 
 
 
+
+
 var renderEnemies = function(enemy_data){
   var enemies = gameBoard.selectAll("circle.enemy").data(enemy_data, function(d){
 
     return d.id
   })
 
+
+
   // console.log(enemies)
   // enemies.attr("cx", Math.random()*100;).attr("cy", 250);
-  enemies.transition().duration(1500)
-    .attr('cx', function(){
+  enemies.transition().duration(1500).tween('enemies', function(){
+
+      var i = d3.interpolateRound(0, 100);
+      return function(t) {
+
+
+
+        console.log(gameStats.score)
+        enemy = d3.select(this);
+        distanceBetweenx = Math.abs(player.attr("cx") - enemy.attr("cx"))
+        distanceBetweeny = Math.abs(player.attr("cy") - enemy.attr("cy"))
+
+        if (distanceBetweenx<10 && distanceBetweeny<10){
+          gameStats.score = 0;
+
+          console.log(distanceBetweenx +" " + distanceBetweeny)
+        }
+
+
+      // console.log(enemy.attr('cx'));
+    };
+  }).attr('cx', function(){
       return axez.x(Math.random()*100)
     })
     .attr('cy', function(){
       return axez.y(Math.random()*100)
     })
+
+  // d3.transition().
 
   enemies.enter()
     .append('svg:circle')
@@ -103,6 +132,8 @@ checkCollision = function(enemy, collidedCallback) {
     return collidedCallback(player, enemy);
   }
   }
-}
+
 };
+
+setInterval(function(){return gameStats.score++},100)
 
