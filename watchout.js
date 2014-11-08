@@ -8,7 +8,7 @@ var gameOptions = {
   numberOfEnemies: 30,
   padding: 20
 };
-var axes = {
+var axez = {
   x: d3.scale.linear()
       .domain([0, 100])
       .range([0, gameOptions.width]),
@@ -42,10 +42,12 @@ var renderEnemies = function(enemy_data){
     .append('svg:circle')
     .attr('class','enemy')
     .attr('cx', function(enemy){
-      return axes.x(enemy.x)
+
+      return axez.x(enemy.x)
+
     }).attr('cy',function(enemy){
-      return axes.y(enemy.y)
-    }).attr('r',0);
+      return axez.y(enemy.y)
+    }).attr('r',10);
 
 }
 
