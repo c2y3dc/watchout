@@ -19,7 +19,26 @@ var axez = {
 var gameBoard = d3.select("body").append("svg")
             .attr("width", gameOptions.width)
             .attr("height", gameOptions.height);
-// var circle = gameBoard.append("circle").attr("cx", 250).attr("cy", 250).attr("r", 11).attr("fill", "red");
+
+
+var drag = d3.behavior.drag()
+             .on('dragstart', function() { player.style('fill', 'indianred'); })
+             .on('drag', function() { player.attr('cx', d3.event.x)
+                                            .attr('cy', d3.event.y); })
+             .on('dragend', function() { player.style('fill', 'crimson'); });
+
+var player = gameBoard.selectAll('.draggableCircle')
+                .data([{ x: (gameOptions.width / 2), y: (gameOptions.height / 2), r: 10 }])
+                .enter()
+                .append('svg:circle')
+                .attr('class', 'draggableCircle')
+                .attr('cx', function(d) { return d.x; })
+                .attr('cy', function(d) { return d.y; })
+                .attr('r', function(d) { return d.r; })
+                .call(drag)
+                .style('fill', 'crimson');
+
+
 
 var createEnemies = function (numberOfEnemies){
   console.log("called");
@@ -33,6 +52,8 @@ var createEnemies = function (numberOfEnemies){
   }
   return array;
 };
+
+
 
 var renderEnemies = function(enemy_data){
   var enemies = gameBoard.selectAll("circle.enemy").data(enemy_data, function(d){
