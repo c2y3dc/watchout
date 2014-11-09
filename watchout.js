@@ -26,22 +26,26 @@ var gameBoard = d3.select("body").append("svg")
 
 var drag = d3.behavior.drag()
              .on('dragstart', function() { player.style('fill', 'indianred'); })
-             .on('drag', function() { player.attr('cx', d3.event.x)
-                                            .attr('cy', d3.event.y); })
+             .on('drag', function() { player.attr('x', d3.event.x)
+                                            .attr('y', d3.event.y); })
              .on('dragend', function() { player.style('fill', 'crimson'); });
 
-var player = gameBoard.selectAll('.draggableCircle')
-                .data([{ x: (gameOptions.width / 2), y: (gameOptions.height / 2), r: 10 }])
+var player = gameBoard.selectAll('.player')
+                .data([{ x: (gameOptions.width / 2), y: (gameOptions.height / 2)}])
                 .enter()
-                .append('svg:circle')
-                .attr('class', 'draggableCircle')
-                .attr('cx', function(d) { return d.x; })
-                .attr('cy', function(d) { return d.y; })
-                .attr('r', function(d) { return d.r; })
+                .append('svg:image')
+                .attr('xlink:href', "icon_63757.svg")
+                .attr('class', 'player')
+                .attr('width', '30')
+                .attr('height', '30')
+                // .style({'top': function(d){ return d.y + 'px'},'left': function(d) { return d.x  + 'px'; }})
+                .attr('x', function(d) { return d.x; })
+                .attr('y', function(d) { return d.y; })
+                // .attr('r', function(d) { return d.r; })
                 .call(drag)
-                .style('fill', 'crimson');
+                // .style('fill', 'crimson');
 
-
+                // <object type="image/svg+xml" data="image.svg">Your browser does not support SVG</object>
 
 var createEnemies = function (numberOfEnemies){
 
@@ -57,7 +61,7 @@ var createEnemies = function (numberOfEnemies){
 };
 
 
-
+var ran = false;
 
 
 var renderEnemies = function(enemy_data){
@@ -70,14 +74,16 @@ var renderEnemies = function(enemy_data){
 
   // console.log(enemies)
   // enemies.attr("cx", Math.random()*100;).attr("cy", 250);
-  enemies.transition().duration(1500).tween('enemies', function(){
+  enemies.transition().ease('bounce').duration(1500).tween('enemies', function(){
 
       var i = d3.interpolateRound(0, 100);
       return function(t) {
 
+        ran = true;
+        if (gameStats.bestScore < gameStats.score){
+          gameStats.bestScore = gameStats.score
+        }
 
-
-        console.log(gameStats.score)
         enemy = d3.select(this);
         distanceBetweenx = Math.abs(player.attr("cx") - enemy.attr("cx"))
         distanceBetweeny = Math.abs(player.attr("cy") - enemy.attr("cy"))
@@ -85,8 +91,11 @@ var renderEnemies = function(enemy_data){
         if (distanceBetweenx<10 && distanceBetweeny<10){
           gameStats.score = 0;
 
+
           console.log(distanceBetweenx +" " + distanceBetweeny)
         }
+        d3.select(".high > span").text(gameStats.bestScore)
+        d3.select(".current > span").text(gameStats.score)
 
 
       // console.log(enemy.attr('cx'));
@@ -135,5 +144,8 @@ checkCollision = function(enemy, collidedCallback) {
 
 };
 
-setInterval(function(){return gameStats.score++},100)
-
+// d3.timer(function(){return gameStats.score++},100)
+setInterval(function(){
+  if(ran){
+  return gameStats.score++}
+},100)
